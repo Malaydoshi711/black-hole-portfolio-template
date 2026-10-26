@@ -1,0 +1,105 @@
+/* Shared component styles: cursor, agent console, command palette.
+   Each site defines these tokens in its own :root:
+   --ink --ink-deep --glass --glass-strong --contour --text --muted --mask --signal --rule --font
+   and its own .btn / .btn--solid. */
+/* ---------- cursor ---------- */
+.cursor { display: none; }
+.has-cursor .cursor { display: block; }
+.cursor__dot, .cursor__ring { position: fixed; left: 0; top: 0; z-index: 150; pointer-events: none; }
+.cursor__dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--signal); }
+.cursor__ring {
+  width: 38px; height: 38px; margin: -19px 0 0 -19px;
+  transition: width .3s, height .3s, margin .3s, transform .2s;
+}
+.cursor__ring i { position: absolute; width: 9px; height: 9px; border-color: var(--text); border-style: solid; border-width: 0; transition: border-color .3s; }
+.cursor__ring i:nth-child(1) { left: 0; top: 0; border-left-width: 1.5px; border-top-width: 1.5px; }
+.cursor__ring i:nth-child(2) { right: 0; top: 0; border-right-width: 1.5px; border-top-width: 1.5px; }
+.cursor__ring i:nth-child(3) { left: 0; bottom: 0; border-left-width: 1.5px; border-bottom-width: 1.5px; }
+.cursor__ring i:nth-child(4) { right: 0; bottom: 0; border-right-width: 1.5px; border-bottom-width: 1.5px; }
+.cursor__ring--lock { width: 58px; height: 58px; margin: -29px 0 0 -29px; }
+.cursor__ring--lock i { border-color: var(--mask); }
+.cursor__ring--down { transform: scale(0.8); }
+.cursor__ring span {
+  position: absolute; left: 100%; top: 100%; margin: 4px 0 0 4px; white-space: nowrap;
+  font-size: 0.75rem; font-weight: 600; color: var(--mask); opacity: 0; transition: opacity .2s;
+}
+.cursor__ring--label span { opacity: 1; }
+
+/* ---------- agent console ---------- */
+.agentx { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; }
+.agentx__scrim { position: absolute; inset: 0; border: 0; background: rgba(8, 6, 26, 0.55); backdrop-filter: blur(3px); cursor: pointer; animation: fade .3s ease; }
+.agentx__panel {
+  position: relative; width: min(100%, 520px); height: 100%; display: flex; flex-direction: column;
+  background: rgba(16, 13, 44, 0.94); border-left: 1px solid var(--rule); backdrop-filter: blur(18px);
+  animation: slidein .45s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes slidein { from { transform: translateX(40px); opacity: 0; } }
+@keyframes fade { from { opacity: 0; } }
+.agentx__head { display: flex; justify-content: space-between; gap: 1rem; padding: 1.4rem 1.5rem 1rem; border-bottom: 1px solid var(--rule); }
+.agentx__head h2 { margin: 0 0 0.25rem; font-size: 1.4rem; font-weight: 760; font-stretch: 118%; }
+.agentx__head p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+.agentx__close { align-self: flex-start; min-height: 36px; padding: 0 0.9rem; border-radius: 999px; border: 1px solid var(--rule); background: transparent; color: var(--text); font: inherit; font-size: 0.85rem; cursor: pointer; }
+.agentx__log { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem; overscroll-behavior: contain; }
+.agentx__empty p { color: var(--muted); margin: 0 0 0.75rem; }
+.agentx__chips { display: flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; }
+.chip {
+  min-height: 38px; padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid var(--rule); background: rgba(12, 10, 36, 0.4);
+  color: var(--text); font: inherit; font-size: 0.9rem; text-align: left; cursor: pointer; transition: border-color .2s;
+}
+.chip:hover { border-color: var(--mask); }
+.turn { margin-bottom: 1.75rem; }
+.turn__q { margin: 0 0 0.75rem auto; width: fit-content; max-width: 85%; padding: 0.6rem 0.95rem; border-radius: 14px 14px 4px 14px; background: var(--mask); color: #1a0b22; font-weight: 560; }
+.trace { list-style: none; margin: 0 0 0.75rem; padding: 0 0 0 0.9rem; border-left: 1px dashed var(--contour); font-size: 0.82rem; font-stretch: 92%; }
+.trace__step { display: flex; gap: 0.6rem; padding: 0.18rem 0; animation: fade .3s ease; }
+.trace__agent { width: 4.6rem; flex: none; font-weight: 700; color: var(--signal); }
+.trace__text { color: var(--muted); }
+.trace__step--run .trace__text::after { content: ""; display: inline-block; width: 1.2em; text-align: left; animation: dots 1s steps(4) infinite; }
+@keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+.trace__step--run .trace__agent { color: var(--mask); }
+.turn__a { margin: 0; line-height: 1.6; }
+.caret { display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: -0.12em; background: var(--signal); animation: blink 0.8s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.turn__meta { margin-top: 0.6rem; font-size: 0.8rem; color: var(--muted); }
+.turn__src { margin: 0 0 0.2rem; display: flex; flex-wrap: wrap; gap: 0.35rem 0.6rem; }
+.turn__src a, .turn__src span { color: var(--text); }
+.turn__via { margin: 0; opacity: 0.75; }
+.agentx__form { display: flex; gap: 0.5rem; padding: 1rem 1.5rem 1.25rem; border-top: 1px solid var(--rule); }
+.agentx__form input {
+  flex: 1; min-width: 0; min-height: 46px; padding: 0 1rem; border-radius: 999px; border: 1px solid var(--rule);
+  background: rgba(8, 6, 26, 0.6); color: var(--text); font: inherit; font-size: 0.95rem;
+}
+.agentx__form input:focus { outline: none; border-color: var(--signal); }
+.agentx__form .btn[disabled] { opacity: 0.5; cursor: default; }
+
+/* ---------- command palette ---------- */
+.palette { position: fixed; inset: 0; z-index: 70; display: flex; justify-content: center; align-items: flex-start; padding: 14vh 16px 0; }
+.palette__scrim { position: absolute; inset: 0; border: 0; background: rgba(8, 6, 26, 0.55); backdrop-filter: blur(4px); cursor: pointer; animation: fade .2s ease; }
+.palette__box {
+  position: relative; width: min(100%, 580px); border-radius: 16px; overflow: hidden;
+  background: rgba(16, 13, 44, 0.96); border: 1px solid var(--rule); box-shadow: 0 40px 100px -20px rgba(0,0,0,.6);
+  animation: pop .25s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes pop { from { transform: translateY(-8px) scale(.98); opacity: 0; } }
+.palette__input { width: 100%; min-height: 58px; padding: 0 1.25rem; border: 0; border-bottom: 1px solid var(--rule); background: transparent; color: var(--text); font: inherit; font-size: 1.05rem; }
+.palette__input:focus { outline: none; }
+.palette__list { list-style: none; margin: 0; padding: 0.4rem; max-height: 50vh; overflow-y: auto; }
+.palette__list li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.7rem 0.85rem; border-radius: 10px; cursor: pointer; font-size: 0.95rem; }
+.palette__list li.is-on { background: rgba(244, 93, 196, 0.14); }
+.palette__list li.is-on span { color: var(--text); }
+.palette__foot { margin: 0; padding: 0.6rem 1rem; border-top: 1px solid var(--rule); font-size: 0.78rem; color: var(--muted); display: flex; gap: 0.3rem; align-items: center; flex-wrap: wrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dock__btn--agent i, .spk--on path, .caret { animation: none; }
+  .agentx__panel, .palette__box, .agentx__scrim, .palette__scrim { animation: none; }
+}
+.has-cursor .agentx, .has-cursor .palette { cursor: auto; }
+.has-cursor .agentx *, .has-cursor .palette * { cursor: auto; }
+.has-cursor .agentx button, .has-cursor .palette li, .has-cursor .agentx a { cursor: pointer; }
+.has-dialog .cursor { display: none !important; }
+.skip { position: absolute; left: -9999px; top: 0; z-index: 200; background: var(--signal); color: var(--ink); padding: 0.6rem 1rem; }
+.skip:focus { left: 1rem; top: 1rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+kbd {
+  display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; padding: 0 0.35em; border-radius: 5px;
+  border: 1px solid var(--rule); background: rgba(236, 234, 248, 0.06); font: inherit; font-size: 0.75rem; color: var(--muted);
+}
